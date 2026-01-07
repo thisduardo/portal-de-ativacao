@@ -3,7 +3,7 @@
         'name' => 'eduardo/fluxo-de-ativacao',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => 'a96fbb893b463788960993cd1b05086e6a03c10b',
+        'reference' => '9045396ed347bd5aa251c0272ee1ffb7e43eae35',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -13,7 +13,7 @@
         'eduardo/fluxo-de-ativacao' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => 'a96fbb893b463788960993cd1b05086e6a03c10b',
+            'reference' => '9045396ed347bd5aa251c0272ee1ffb7e43eae35',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
