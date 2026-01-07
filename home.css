@@ -1,0 +1,126 @@
+/* * ARQUIVO: home.css
+ * VERSÃO: 4.2 - ALINHAMENTO E UX
+ */
+
+/* 1. CONFIGURAÇÕES BASE */
+body {
+    font-family: 'Sora', sans-serif;
+    background-color: #f8fafc; /* Slate-50 */
+    color: #1e293b; /* Slate-800 */
+}
+
+/* 2. CORES TKS */
+.text-tks-primary { color: #522340 !important; }
+.bg-tks-primary { background-color: #522340 !important; }
+.bg-tks-dark { background-color: #3d1a30 !important; }
+.border-tks-primary { border-color: #522340 !important; }
+
+/* 3. SOMBRAS CLEAN */
+.shadow-clean {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02), 
+                0 10px 15px -3px rgba(0, 0, 0, 0.04),
+                0 20px 25px -5px rgba(0, 0, 0, 0.02);
+}
+.shadow-clean-lg {
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05),
+                0 25px 30px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* 4. MICRO-INTERAÇÕES */
+.btn-press:active {
+    transform: scale(0.96);
+}
+
+.btn-card-press:active {
+    transform: scale(0.98);
+    transition: transform 0.1s;
+}
+
+.anim-shake {
+    animation: shake 0.5s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+@keyframes shake {
+    10%, 90% { transform: translate3d(-1px, 0, 0); }
+    20%, 80% { transform: translate3d(2px, 0, 0); }
+    30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+    40%, 60% { transform: translate3d(4px, 0, 0); }
+}
+
+/* 5. ANIMAÇÕES DE ENTRADA */
+.anim-fade-in-up {
+    opacity: 0;
+    animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.anim-fade-in {
+    opacity: 0;
+    animation: fadeIn 0.8s ease-out forwards;
+}
+
+.anim-slide-down {
+    opacity: 0;
+    animation: slideDown 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.delay-100 { animation-delay: 0.1s; }
+.delay-200 { animation-delay: 0.2s; }
+.delay-300 { animation-delay: 0.3s; }
+.delay-500 { animation-delay: 0.5s; }
+
+@keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideDown {
+    from { opacity: 0; transform: translateY(-40px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+.animate-bounce-short {
+    animation: bounce 1s infinite;
+}
+
+/* 6. MODAIS - CONTROLE DE ESTADO */
+#modal-error, #modal-success {
+    pointer-events: none;
+}
+#modal-error.flex, #modal-success.flex {
+    pointer-events: auto;
+    opacity: 1 !important;
+}
+#modal-error-content, #modal-success-content {
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+#modal-error.flex #modal-error-content,
+#modal-success.flex #modal-success-content {
+    transform: scale(1);
+}
+
+/* 7. BACKGROUND AMBIENTE */
+.anim-float-slow { animation: float 10s ease-in-out infinite; }
+.anim-float-reverse { animation: floatReverse 15s ease-in-out infinite; }
+
+@keyframes float {
+    0% { transform: translate(0, 0); }
+    50% { transform: translate(20px, 40px); }
+    100% { transform: translate(0, 0); }
+}
+@keyframes floatReverse {
+    0% { transform: translate(0, 0); }
+    50% { transform: translate(-30px, -20px); }
+    100% { transform: translate(0, 0); }
+}
+
+

@@ -1,0 +1,35 @@
+TKS Vantagens - Fluxo de Ativação (Documentação Técnica)
+1. Visão Geral
+Esta aplicação web gerencia o fluxo de ativação de benefícios para usuários da TKS Vantagens. O sistema valida o CPF do usuário, verifica a elegibilidade e permite a ativação de serviços (Clube de Vantagens, Telemedicina) em parceiros externos.
+2. Estrutura de Arquivos
+index.php (Camada de Apresentação)
+• Função: Ponto de entrada da aplicação.
+• Responsabilidade: Renderiza o HTML base, carrega as bibliotecas (Tailwind, FontAwesome) e define variáveis iniciais PHP. Contém as duas "telas" principais (Login e Dashboard) que são alternadas via JavaScript.
+• Bibliotecas: * Tailwind CSS (CDN)
+• FontAwesome (Ícones)
+• Google Fonts (Inter)
+script.js (Camada Lógica - Client Side)
+• Função: Cérebro da interatividade.
+• Responsabilidade: * Gerencia a máscara de input do CPF.
+• Intercepta o envio do formulário.
+• Simula a chamada de API (atualmente usa MOCK_DB).
+• Manipula o DOM para trocar de tela (Login -> Dashboard).
+• Gerencia os Modais (Sucesso/Erro).
+home.css (Camada de Estilo Personalizado)
+• Função: Estilização complementar.
+• Responsabilidade: Define animações (fade-in), comportamentos de modal e cores específicas da marca que não estão no padrão do Tailwind.
+composer.json / composer.lock (Gerenciamento de Dependências)
+• Função: Gestão de pacotes PHP.
+• Pacotes Atuais: vlucas/phpdotenv (Para carregar variáveis de ambiente, ex: senhas de banco de dados, de forma segura).
+3. Fluxo de Dados (Lógica Atual)
+1. Usuário acessa index.php.
+2. PHP renderiza a página com variáveis iniciais.
+3. Usuário digita CPF. script.js aplica máscara em tempo real.
+4. Usuário clica em "Verificar".
+5. script.js consulta o objeto local MOCK_DB (Futura integração via API).
+• Se encontrado: Oculta div #screen-login e mostra #screen-dashboard.
+• Se não encontrado: Abre modal #modal-error.
+4. Guia de Implementação (Próximos Passos)
+Para conectar ao banco de dados real, o desenvolvedor deve:
+1. Criar um arquivo PHP (ex: api/verificar_cpf.php) que consulta o Supabase.
+2. No script.js, substituir a consulta ao MOCK_DB por um fetch() para este novo arquivo PHP.

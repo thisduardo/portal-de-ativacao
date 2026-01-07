@@ -1,0 +1,20 @@
+{
+    "name": "eduardo/fluxo-de-ativacao",
+    "description": "Sistema de ativação de servicos para cliente",
+    "type": "project",
+    "license": "proprietary",
+    "autoload": {
+        "psr-4": {
+            "Eduardo\\FluxoDeAtivacao\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Tks Vantagens"
+        }
+    ],
+    "minimum-stability": "stable",
+    "require": {
+        "vlucas/phpdotenv": "^5.6"
+    }
+}
