@@ -1,6 +1,10 @@
 /**
  * ARQUIVO: script.js
- * VERSÃO: 4.2 (fix: mostrar somente benefícios que o usuário tem direito)
+ * VERSÃO: 4.5 (UI sempre ATIVA + sincronização silenciosa no login)
+ * DESCRIÇÃO:
+ *  - Mostra somente os benefícios que o usuário tem direito (entitlements)
+ *  - Benefícios sempre aparecem como "Ativo" (sem botão de ativar)
+ *  - Ao logar com sucesso, dispara sincronização via /api/sync.php (silent)
  */
 
 const PRODUCT_IDS = {
@@ -108,6 +112,11 @@ async function handleCheckCpf(e) {
 
       // ✅ mostra somente benefícios com entitlement ativo
       applyEntitlementsUI(data?.entitlements || []);
+
+      // ✅ sincronização silenciosa (não muda UI)
+      const payload = buildSyncPayload(data);
+      if (payload?.user_id) runSynchronization(payload);
+
     }, 400);
 
   } catch (err) {
@@ -132,14 +141,10 @@ function makeInitials(name) {
 
 /**
  * Mostra apenas os cards que o usuário tem direito
- * Observação: seus cards estão com class="hidden" no HTML,
- * então aqui a gente remove/adiciona "hidden" (Tailwind).
  */
 function applyEntitlementsUI(entitlements) {
   const cardClube = document.getElementById('card-clube');
   const cardTele  = document.getElementById('card-tele');
-
-  console.log("applyEntitlementsUI called. entitlements:", entitlements);
 
   if (!cardClube || !cardTele) {
     console.error("Cards não encontrados no DOM", { cardClube, cardTele });
@@ -155,74 +160,89 @@ function applyEntitlementsUI(entitlements) {
     .map(e => String(e?.product?.id || '').trim())
     .filter(Boolean);
 
-  console.log("IDs ativos:", ids);
-
   const hasClube = ids.includes(PRODUCT_IDS.clube);
   const hasTele  = ids.includes(PRODUCT_IDS.tele);
-
-  console.log("hasClube:", hasClube, "hasTele:", hasTele);
 
   // 3) mostra só o que tem direito
   if (hasClube) cardClube.classList.remove('hidden');
   if (hasTele)  cardTele.classList.remove('hidden');
 
   // 4) se não tiver nenhum, mostra aviso
+  const container = document.querySelector('#screen-dashboard .lg\\:col-span-2');
+  if (!container) return;
+
+  const old = document.getElementById('no-benefits');
+  if (old) old.remove();
+
   if (!hasClube && !hasTele) {
-    const container = document.querySelector('#screen-dashboard .lg\\:col-span-2');
-    if (container) {
-      const old = document.getElementById('no-benefits');
-      if (old) old.remove();
-
-      const div = document.createElement('div');
-      div.id = 'no-benefits';
-      div.className = 'bg-white rounded-[1.5rem] p-6 shadow-clean border border-slate-100 text-slate-600';
-      div.innerHTML = `
-        <p class="font-bold text-slate-800 mb-1">Nenhum benefício disponível</p>
-        <p class="text-sm text-slate-500">Não encontramos benefícios ativos para este CPF.</p>
-      `;
-      container.appendChild(div);
-    }
-  } else {
-    const old = document.getElementById('no-benefits');
-    if (old) old.remove();
-  }
-}
-
-function triggerCardAction(type) {
-  if (type === 'tele') return;
-  if (type === 'clube') {
-    const btn = document.querySelector('#status-clube-area button');
-    if (btn && !btn.disabled) activateBenefit(btn);
-  }
-}
-
-function activateBenefit(btnElement) {
-  // evita propagação se chamado por clique interno
-  if (window.event) window.event.stopPropagation();
-
-  const originalWidth = btnElement.offsetWidth;
-  btnElement.style.width = originalWidth + 'px';
-  btnElement.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i>';
-  btnElement.disabled = true;
-
-  setTimeout(() => {
-    openSuccessModal();
-
-    const parent = btnElement.parentElement;
-    parent.innerHTML = `
-      <div class="flex items-center gap-4 anim-fade-in">
-        <div class="inline-flex items-center gap-2 text-green-600 font-bold text-sm bg-green-50 px-4 py-2 rounded-lg border border-green-100 shadow-sm">
-          <i class="fas fa-check-circle"></i> Ativo
-        </div>
-        <a href="#" class="text-sm font-semibold text-slate-400 hover:text-tks-primary transition border-b-2 border-transparent hover:border-tks-primaryIMARY pb-0.5">
-          Acessar Clube
-        </a>
-      </div>
+    const div = document.createElement('div');
+    div.id = 'no-benefits';
+    div.className = 'bg-white rounded-[1.5rem] p-6 shadow-clean border border-slate-100 text-slate-600';
+    div.innerHTML = `
+      <p class="font-bold text-slate-800 mb-1">Nenhum benefício disponível</p>
+      <p class="text-sm text-slate-500">Não encontramos benefícios ativos para este CPF.</p>
     `;
-  }, 1500);
+    container.appendChild(div);
+  }
 }
 
-// --- MODAIS ---
+/**
+ * Monta payload pra /api/sync.php
+ * Ajuste campos conforme seu activation.php retorna.
+ */
+function buildSyncPayload(activationData) {
+  const profile = activationData?.profile || {};
+  const company = activationData?.company_membership?.company || {};
+  const entitlements = activationData?.entitlements || [];
+
+  // ✅ agora salva NOME do produto (vindo do activation.php)
+  const activeProducts = (entitlements || [])
+    .map(e => String(e?.product?.name || '').trim())
+    .filter(Boolean);
+
+  return {
+    user_id: profile?.id,
+    cpf: profile?.cpf,
+    full_name: profile?.full_name,
+    phone: profile?.phone,
+    birth_date: profile?.birth_date,
+    company: {
+      id: company?.id,
+      name: company?.name || company?.trade_name || company?.corporate_name || null
+    },
+    active_products: activeProducts // ✅ nomes
+  };
+}
+
+
+/**
+ * Dispara sincronização sem afetar UI.
+ * Se falhar, só loga no console (pra não expor pro usuário).
+ */
+async function runSynchronization(payload) {
+  try {
+    const res = await fetch('/api/sync.php', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await res.json().catch(() => ({}));
+
+    if (!res.ok) {
+      console.warn('SYNC failed:', res.status, data);
+      return { ok: false, data };
+    }
+
+    console.log('SYNC ok:', data);
+    return { ok: true, data };
+  } catch (err) {
+    console.warn('SYNC error:', err);
+    return { ok: false, data: null };
+  }
+}
+
+// --- MODAL ERROR ---
 function openModal() {
   const modal = document.getElementById('modal-error');
   if (!modal) return;
@@ -237,6 +257,7 @@ function closeModal() {
   setTimeout(() => { modal.classList.add('hidden'); }, 300);
 }
 
+// --- MODAL SUCCESS (mantido se você ainda usa em outras ações) ---
 function openSuccessModal() {
   const modal = document.getElementById('modal-success');
   if (!modal) return;
