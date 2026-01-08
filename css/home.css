@@ -123,4 +123,12 @@ body {
     100% { transform: translate(0, 0); }
 }
 
+@media (max-width: 639px) {
+  body:has(#screen-dashboard:not(.hidden)) {
+    justify-content: flex-start !important;
+  }
 
+  body:has(#screen-dashboard:not(.hidden)) #screen-dashboard {
+    padding-top: 2.5rem;
+  }
+}

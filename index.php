@@ -37,7 +37,7 @@ $userInitials = "--";
     <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
     <!-- 4. CSS Local -->
-    <link rel="stylesheet" href="home.css">
+    <link rel="stylesheet" href="/css/home.css">
 </head>
 
 <body class="min-h-screen flex flex-col items-center justify-center font-sora bg-slate-50 text-slate-800 p-4 relative overflow-x-hidden">
@@ -248,7 +248,7 @@ $userInitials = "--";
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script src="/js/script.js"></script>
 </body>
 
 </html>
