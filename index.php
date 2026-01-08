@@ -169,7 +169,7 @@ $userInitials = "--";
                                         <div class="inline-flex items-center gap-2 text-green-600 font-bold text-xs lg:text-sm bg-green-50 px-3 py-1.5 lg:px-4 lg:py-2 rounded-lg border border-green-100 shadow-sm">
                                             <i class="fas fa-check-circle"></i> Ativo
                                         </div>
-                                        <a href="#" class="text-xs lg:text-sm font-semibold text-slate-400 hover:text-tks-primary transition border-b-2 border-transparent hover:border-tks-primary pb-0.5">
+                                        <a href="#"  id="access-club" class="text-xs lg:text-sm font-semibold text-slate-400 hover:text-tks-primary transition border-b-2 border-transparent hover:border-tks-primary pb-0.5">
                                             Acessar Clube
                                         </a>
                                     </div>

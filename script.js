@@ -275,3 +275,26 @@ function closeSuccessModal() {
 function logout() {
   location.reload();
 }
+
+
+document.getElementById('access-club').addEventListener('click', function (e) {
+    e.preventDefault();
+
+    const ua = navigator.userAgent || navigator.vendor || window.opera;
+
+    // Android
+    if (/android/i.test(ua)) {
+        window.location.href = 'https://play.google.com/store/apps/details?id=br.com.tks.vantagens&hl=pt_BR&pli=1';
+        return;
+    }
+
+    // iOS (iPhone, iPad, iPod)
+    if (/iPad|iPhone|iPod/.test(ua) && !window.MSStream) {
+        window.location.href = 'https://apps.apple.com/us/app/tks-vantagens/id6459477158?l=pt-BR';
+        return;
+    }
+
+    // Desktop (Windows, Mac, Linux)
+    window.location.href = 'https://app.tksvantagens.com.br/main';
+});
+
