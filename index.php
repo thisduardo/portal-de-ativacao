@@ -88,7 +88,8 @@ $userInitials = "--";
                         </span>
                     </button>
 
-                </form>s
+
+                </form>
             </div>
 
             <p class="mt-8 text-xs text-slate-400 font-medium anim-fade-in delay-500">© <?php echo $currentYear; ?> TKS Vantagens. Todos os direitos reservados.</p>
