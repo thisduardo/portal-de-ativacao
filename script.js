@@ -27,15 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
-function fillTestCpf() {
-  const input = document.getElementById('cpf');
-  if (!input) return;
 
-  input.value = '123.456.789-00';
-  input.focus();
-  input.classList.add('ring-4', 'ring-tks-primary/20');
-  setTimeout(() => input.classList.remove('ring-4', 'ring-tks-primary/20'), 300);
-}
 
 function maskCPF(input) {
   let value = input.value.replace(/\D/g, "");
